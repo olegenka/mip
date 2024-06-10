@@ -33,6 +33,9 @@ p.setJointMotorControl2(bodyIndex=boxId, jointIndex=jIdx, targetVelocity=0, cont
 a3 = 10*0.9/T**3
 a4 = -15*0.9/T**4
 a5 = 6*0.9/T**5
+
+a = np.array([th0, 0, 0, a3, a4, a5])
+
 for t in logTime[1:]:
     jointState = p.getJointState(boxId, jIdx)
     th1 = jointState[0]
