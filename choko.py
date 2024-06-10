@@ -10,7 +10,7 @@ L = 0.5
 g = 10  
 m = 1 
 k = 0.5  
-kp = 200
+kp = 20
 kd = 10
 maxTime = 2*T 
 logTime = np.arange(0.0, maxTime, dt)  
@@ -30,11 +30,11 @@ for _ in range(1000):
     p.stepSimulation()
 
 p.setJointMotorControl2(bodyIndex=boxId, jointIndex=jIdx, targetVelocity=0, controlMode=p.VELOCITY_CONTROL, force=0)
-a3 = 10*0.9/T**3
-a4 = -15*0.9/T**4
-a5 = 6*0.9/T**5
+a3 = 10/T**3
+a4 = -15/T**4
+a5 = 6/T**5
 
-a = np.array([th0, 0, 0, a3, a4, a5])
+a = np.array([0, 0, 0, a3, a4, a5])
 
 for t in logTime[1:]:
     jointState = p.getJointState(boxId, jIdx)
@@ -42,7 +42,10 @@ for t in logTime[1:]:
     dth1 = jointState[1]
     if t < T:
         
-        th_d, thd_d, thdd_d = np.polyval(a, t), np.polyval(np.polyder(a), t), np.polyval(np.polyder(a, 2), t)
+        #th_d, thd_d, thdd_d = np.polyval(a, t), np.polyval(np.polyder(a), t), np.polyval(np.polyder(a, 2), t)
+        th_d = a3*t**3 + a4*t**4 + a5*t**5
+        thd_d = 3.0*a3*t**2 + 4.0*a4*t**3 + 5.0*a5*t**4
+        thdd_d = 6.0*a3*t + 12.0*a4*t**2 + 20.0*a5*t**3
         error = th1 - th_d
         error_dot = dth1 - thd_d
         u = -kp*error - kd*error_dot + thdd_d
